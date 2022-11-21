@@ -5,7 +5,7 @@
 using namespace GLP;
 
 Mesh::Mesh(const float *vertices, unsigned vertexCount,
-             const unsigned int *indices, unsigned int indexCount, Shape shape)
+           const unsigned int *indices, unsigned int indexCount, Shape shape)
     : shape(shape), indexCount(indexCount) {
 
   glGenVertexArrays(1, &VAO);
@@ -25,22 +25,22 @@ Mesh::Mesh(const float *vertices, unsigned vertexCount,
   glBindVertexArray(0);
 }
 
-void Mesh::setVertexAttributes(const unsigned char *channelSizes,
-                                unsigned char channelCount) {
+void Mesh::setVertexAttributes(const unsigned char *size, unsigned char *padded,
+                               unsigned char channelCount) {
 
-  unsigned char stride = 0;
   float *offset = 0;
+  unsigned int stride = 0;
 
   for (unsigned char i = 0; i < channelCount; ++i) {
-    stride += channelSizes[i];
+    stride += padded[i];
   }
 
   bind();
 
   for (unsigned char i = 0; i < channelCount; ++i) {
-    glVertexAttribPointer(i, channelSizes[i], GL_FLOAT, GL_FALSE,
+    glVertexAttribPointer(i, size[i], GL_FLOAT, GL_FALSE,
                           stride * sizeof(float), (void *)offset);
-    offset += channelSizes[i];
+    offset += padded[i];
     glEnableVertexAttribArray(i);
   }
   unbind();

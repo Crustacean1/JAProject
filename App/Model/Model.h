@@ -29,7 +29,7 @@ public:
        const unsigned int *indices, unsigned int indexCount, Shape shape);
 
   void setVertexAttributes(const unsigned char *channelSizes,
-                           unsigned char channelCount);
+                           unsigned char *padded, unsigned char channelCount);
   void bind();
   void unbind();
 

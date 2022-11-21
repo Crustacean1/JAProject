@@ -17,24 +17,31 @@ TorusIndexGenerator loadIndexGenerator(const char *filename) {
   return (TorusIndexGenerator)dlsym(sharedObject, "torusIndexGenerator");
 }
 
+RingTableGenerator loadRingTableGenerator(const char *filename) {
+  void *sharedObject = dlopen(filename, RTLD_LAZY);
+  return (RingTableGenerator)dlsym(sharedObject, "ringTableGenerator");
+}
+
 MeshLoader::MeshLoader() {
-  setTorusDimensions(10, 9);
-  setTorusResolution(1000, 1000);
-  setThreadCount(8);
+  setTorusDimensions(10, 4);
+  setTorusResolution(10, 10);
+  setThreadCount(1);
   loadSharedLibrary(LibraryType::CPP);
 }
 
 void MeshLoader::loadSharedLibrary(LibraryType type) {
+  const char *source;
   switch (type) {
   case LibraryType::CPP:
-    vertexGenerator = loadVertexGenerator(CPP_DIRECTORY.c_str());
-    indexGenerator = loadIndexGenerator(CPP_DIRECTORY.c_str());
+    source = CPP_DIRECTORY.c_str();
     break;
   case LibraryType::ASM:
-    vertexGenerator = loadVertexGenerator(ASM_DIRECTORY.c_str());
-    indexGenerator = loadIndexGenerator(ASM_DIRECTORY.c_str());
+    source = ASM_DIRECTORY.c_str();
     break;
   }
+  ringTableGenerator = loadRingTableGenerator(source);
+  vertexGenerator = loadVertexGenerator(source);
+  indexGenerator = loadIndexGenerator(source);
 }
 
 void MeshLoader::setThreadCount(unsigned int threadCount) {
@@ -62,6 +69,8 @@ GLP::Mesh *MeshLoader::regenerateMesh() {
 
   std::vector<std::thread> workers;
   double *threadTimes = new double[threadCount];
+
+  ringTableGenerator(ringResolution);
 
   for (int i = 0; i < threadCount; ++i) {
 
@@ -96,13 +105,25 @@ GLP::Mesh *MeshLoader::regenerateMesh() {
 
   indexGenerator(indices, torusResolution, ringResolution);
 
+  for(int i = 0;i<10;++i){
+    std::cout<<vertices[i * 8 + 0]<<"\t";
+    std::cout<<vertices[i * 8 + 1]<<"\t";
+    std::cout<<vertices[i * 8 + 2]<<"\t";
+    std::cout<<vertices[i * 8 + 3]<<"\t";
+    std::cout<<vertices[i * 8 + 4]<<"\t";
+    std::cout<<vertices[i * 8 + 5]<<"\t";
+    std::cout<<vertices[i * 8 + 6]<<"\t";
+    std::cout<<vertices[i * 8 + 7]<<std::endl;
+  }
+
   auto mesh = new GLP::Mesh(
       vertices, vertexSize * torusResolution * ringResolution, indices,
       indexSize * (torusResolution - 1) * (ringResolution - 1) * 2,
-      GLP::Mesh::Shape::TRIANGLES);
+      GLP::Mesh::Shape::POINTS);
 
-  unsigned char attribs[] = {3, 3};
-  mesh->setVertexAttributes(attribs, 2);
+  unsigned char sizes[] = {3, 3};
+  unsigned char padded[] = {4, 4};
+  mesh->setVertexAttributes(sizes, padded, 2);
 
   return mesh;
 }

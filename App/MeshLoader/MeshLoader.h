@@ -4,6 +4,8 @@
 #include "../Model/Model.h"
 #include <iostream>
 
+typedef void (*RingTableGenerator)(unsigned int ringResolution);
+
 typedef void (*TorusVertexGenerator)(float *vertices, unsigned int threadNo,
                                      unsigned int threadCount, float torusSize,
                                      float ringSize,
@@ -22,7 +24,7 @@ class MeshLoader {
   const std::string CPP_DIRECTORY = "../Cpp/build/libgentorus.so";
   const std::string ASM_DIRECTORY = "../Cpp/build/libgentorus.so";
 
-  const unsigned int vertexSize = 6;
+  const unsigned int vertexSize = 8;
   const unsigned int indexSize = 3;
 
   float *vertices;
@@ -38,6 +40,7 @@ class MeshLoader {
 
   TorusVertexGenerator vertexGenerator;
   TorusIndexGenerator indexGenerator;
+  RingTableGenerator ringTableGenerator;
 
 public:
   enum class LibraryType : unsigned char { ASM, CPP };
