@@ -43,36 +43,27 @@ void torusVertexGenerator(float *vertices, unsigned int threadNo,
 
   float outerX, outerY, outerZ;
 
-  float torusSizeVector[] = {torusSize, torusSize, torusSize, torusSize,
-                             0,         0,         0,         0};
-  float ringSizeVector[] = {1, 1, 1, 1, 1, 1, 1, 1};
+  float torusSizeVector[] = {torusSize, 0, torusSize, torusSize, 0, 0, 0, 0};
+  float ringSizeVector[] = {ringSize, ringSize, ringSize, ringSize, 1, 1, 1, 1};
   float torusDirectionVector[] = {0, 0, 0, 0, 0, 0, 0, 0};
 
   __m256 torusSizeFactor = _mm256_loadu_ps(torusSizeVector);
   __m256 ringSizeFactor = _mm256_loadu_ps(ringSizeVector);
 
   for (int i = 0; i < stepCount; ++i, torusAngle += torusAngleStep) {
-    torusDirectionVector[0] = cos(torusAngle);
-    torusDirectionVector[1] = 1;
-    torusDirectionVector[2] = sin(torusAngle);
+    torusDirectionVector[0] = torusDirectionVector[4] = cos(torusAngle);
+    torusDirectionVector[1] = torusDirectionVector[5] = 1;
+    torusDirectionVector[2] = torusDirectionVector[6] = sin(torusAngle);
 
     __m256 torusDirection = _mm256_loadu_ps(torusDirectionVector);
 
     for (int j = 0; j < ringResolution; ++j) {
       __m256 ringPosition = _mm256_loadu_ps(ringPositions + j * 8);
       __m256 vertex = _mm256_mul_ps(ringPosition, ringSizeFactor);
-      // vertex = torusSizeFactor;
+      vertex = _mm256_add_ps(vertex, torusSizeFactor);
       vertex = _mm256_mul_ps(vertex, torusDirection);
       _mm256_storeu_ps(ptr, vertex);
       ptr += 8;
-
-      /**(ptr++) = outerX * (torusSize + cos(ringAngle) * ringSize);
-      *(ptr++) = outerY * (torusSize + sin(ringAngle) * ringSize);
-      *(ptr++) = outerZ * (torusSize + cos(ringAngle) * ringSize);
-
-      *(ptr++) = outerX * cos(ringAngle);
-      *(ptr++) = outerY * sin(ringAngle);
-      *(ptr++) = outerZ * cos(ringAngle);*/
     }
   }
 }

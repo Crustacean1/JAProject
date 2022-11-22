@@ -24,8 +24,8 @@ RingTableGenerator loadRingTableGenerator(const char *filename) {
 
 MeshLoader::MeshLoader() {
   setTorusDimensions(10, 4);
-  setTorusResolution(10, 10);
-  setThreadCount(1);
+  setTorusResolution(50, 50);
+  setThreadCount(4);
   loadSharedLibrary(LibraryType::CPP);
 }
 
@@ -105,21 +105,10 @@ GLP::Mesh *MeshLoader::regenerateMesh() {
 
   indexGenerator(indices, torusResolution, ringResolution);
 
-  for(int i = 0;i<10;++i){
-    std::cout<<vertices[i * 8 + 0]<<"\t";
-    std::cout<<vertices[i * 8 + 1]<<"\t";
-    std::cout<<vertices[i * 8 + 2]<<"\t";
-    std::cout<<vertices[i * 8 + 3]<<"\t";
-    std::cout<<vertices[i * 8 + 4]<<"\t";
-    std::cout<<vertices[i * 8 + 5]<<"\t";
-    std::cout<<vertices[i * 8 + 6]<<"\t";
-    std::cout<<vertices[i * 8 + 7]<<std::endl;
-  }
-
   auto mesh = new GLP::Mesh(
       vertices, vertexSize * torusResolution * ringResolution, indices,
       indexSize * (torusResolution - 1) * (ringResolution - 1) * 2,
-      GLP::Mesh::Shape::POINTS);
+      GLP::Mesh::Shape::TRIANGLES);
 
   unsigned char sizes[] = {3, 3};
   unsigned char padded[] = {4, 4};
