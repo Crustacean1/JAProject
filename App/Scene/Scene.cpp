@@ -31,7 +31,7 @@ void Scene::init() {
 
   shaderGroups.begin()->addModelInstance(torusInstance);
 
-  camera.setPos(glm::vec3(0, 0, 5));
+  camera.setPos(glm::vec3(0, 0, 0));
   basicShader.set("color", glm::vec4(1, 0, 0, 0));
 }
 
@@ -43,8 +43,10 @@ void Scene::render() {
 }
 
 void Scene::update() {
-  basicShader.set("light.dir", glm::vec3(cos(lightAngle), sin(lightAngle), 0));
+  basicShader.set("light.dir",
+                  glm::vec3(cos(lightAngle), sin(lightAngle), 0));
   auto currentTime = std::chrono::system_clock::now();
   double timeDelta = (currentTime - prevTime).count();
-  lightAngle += timeDelta / 100000000000000000000.0;
+  lightAngle = -M_PI * 0.5;
+  lightAngle += timeDelta / 1000000000.0;
 }
