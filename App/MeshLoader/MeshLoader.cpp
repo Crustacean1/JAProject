@@ -19,8 +19,8 @@ TorusIndexGenerator loadIndexGenerator(const char *filename) {
 
 MeshLoader::MeshLoader() {
   setTorusDimensions(10, 4);
-  setTorusResolution(50, 50);
-  setThreadCount(10);
+  setTorusResolution(1000, 1000);
+  setThreadCount(2);
   loadSharedLibrary(LibraryType::CPP);
 }
 
