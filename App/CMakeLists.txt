@@ -17,6 +17,9 @@ include_directories(${PROJECT_SOURCE_DIR}/glm/)
 
 link_libraries(${PROJECT_SOURCE_DIR}/glfw-3.3.8/build/src/libglfw3.a)
 
+set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+set(CMAKE_CXX_FLAGS "-O3")
+
 file(GLOB SOURCES Shaders/* Model/* Camera/* MeshLoader/* RenderingContext/* Scene/* App/* ImGui/*)
 
 add_executable(Project1 main.cpp glad/src/glad.c ${SOURCES})
