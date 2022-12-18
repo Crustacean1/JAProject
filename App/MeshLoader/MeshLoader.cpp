@@ -18,9 +18,9 @@ TorusIndexGenerator loadIndexGenerator(const char *filename) {
 }
 
 MeshLoader::MeshLoader() {
-  setTorusDimensions(10, 10);
-  setTorusResolution(10, 10);
-  setThreadCount(2);
+  setTorusDimensions(10, 4);
+  setTorusResolution(100, 100);
+  setThreadCount(8);
   loadSharedLibrary(LibraryType::ASM);
 }
 
@@ -73,6 +73,7 @@ GLP::Mesh *MeshLoader::regenerateMesh() {
     workers.emplace_back([=]() {
       auto t1 = std::chrono::high_resolution_clock::now();
 
+      std::cout << "args " << i << "\t" << nextPos - pos << std::endl;
       vertexGenerator(vertices + pos * ringResolution * 8, nextPos - pos,
                       2 * M_PI * i / threadCount, 2 * M_PI / torusResolution,
                       torusSize, ringSize, ringResolution);
@@ -104,7 +105,7 @@ GLP::Mesh *MeshLoader::regenerateMesh() {
   std::cout << "Max: " << max << std::endl;
   std::cout << "Avg: " << avg << std::endl;
 
-  for (int i = 0; i < 10; ++i) {
+  for (int i = 0; i < 00; ++i) {
     std::cout << vertices[i * 8] << "\t" << vertices[i * 8 + 1] << "\t"
               << vertices[i * 8 + 2] << "\t" << vertices[i * 8 + 3] << "\t"
               << vertices[i * 8 + 4] << "\t" << vertices[i * 8 + 5] << "\t"

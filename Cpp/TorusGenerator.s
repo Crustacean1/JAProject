@@ -54,6 +54,35 @@ _ZSt3sinf:
 	.size	_ZL11VERTEX_SIZE, 4
 _ZL11VERTEX_SIZE:
 	.long	8
+	.globl	ones
+	.data
+	.align 16
+	.type	ones, @object
+	.size	ones, 17
+ones:
+	.long	1065353216
+	.long	1065353216
+	.long	1065353216
+	.long	1065353216
+	.globl	zeros
+	.bss
+	.align 16
+	.type	zeros, @object
+	.size	zeros, 16
+zeros:
+	.zero	16
+	.globl	oneVector
+	.align 16
+	.type	oneVector, @object
+	.size	oneVector, 16
+oneVector:
+	.zero	16
+	.globl	zeroVector
+	.align 16
+	.type	zeroVector, @object
+	.size	zeroVector, 16
+zeroVector:
+	.zero	16
 	.text
 	.globl	torusVertexGenerator
 	.type	torusVertexGenerator, @function
@@ -69,20 +98,20 @@ torusVertexGenerator:
 	.cfi_escape 0x10,0x6,0x2,0x76,0
 	pushq	%r10
 	.cfi_escape 0xf,0x3,0x76,0x78,0x6
-	subq	$648, %rsp
-	movq	%rdi, -616(%rbp)
-	movl	%esi, -620(%rbp)
-	vmovss	%xmm0, -624(%rbp)
-	vmovss	%xmm1, -628(%rbp)
-	vmovss	%xmm2, -632(%rbp)
-	vmovss	%xmm3, -636(%rbp)
-	movl	%edx, -640(%rbp)
+	subq	$1000, %rsp
+	movq	%rdi, -968(%rbp)
+	movl	%esi, -972(%rbp)
+	vmovss	%xmm0, -976(%rbp)
+	vmovss	%xmm1, -980(%rbp)
+	vmovss	%xmm2, -984(%rbp)
+	vmovss	%xmm3, -988(%rbp)
+	movl	%edx, -992(%rbp)
 	movq	%fs:40, %rax
 	movq	%rax, -24(%rbp)
 	xorl	%eax, %eax
 	vxorps	%xmm0, %xmm0, %xmm0
-	vmovss	%xmm0, -600(%rbp)
-	movl	-640(%rbp), %eax
+	vmovss	%xmm0, -952(%rbp)
+	movl	-992(%rbp), %eax
 	testq	%rax, %rax
 	js	.L6
 	vcvtsi2sdq	%rax, %xmm0, %xmm0
@@ -98,191 +127,292 @@ torusVertexGenerator:
 	vmovsd	.LC1(%rip), %xmm1
 	vdivsd	%xmm0, %xmm1, %xmm0
 	vcvtsd2ss	%xmm0, %xmm0, %xmm0
-	vmovss	%xmm0, -588(%rbp)
-	vxorps	%xmm0, %xmm0, %xmm0
-	vmovss	%xmm0, -96(%rbp)
+	vmovss	%xmm0, -940(%rbp)
+	movl	-976(%rbp), %eax
+	vmovd	%eax, %xmm0
+	call	_ZSt3cosf
+	vmovd	%xmm0, %eax
+	movl	%eax, -96(%rbp)
+	movl	-976(%rbp), %eax
+	vmovd	%eax, %xmm0
+	call	_ZSt3sinf
+	vmovd	%xmm0, %eax
+	movl	%eax, -92(%rbp)
+	movl	-976(%rbp), %eax
+	vmovd	%eax, %xmm0
+	call	_ZSt3cosf
+	vmovd	%xmm0, %eax
+	movl	%eax, -88(%rbp)
+	movl	-976(%rbp), %eax
+	vmovd	%eax, %xmm0
+	call	_ZSt3sinf
+	vmovd	%xmm0, %eax
+	movl	%eax, -84(%rbp)
 	vmovss	.LC2(%rip), %xmm0
-	vmovss	%xmm0, -92(%rbp)
-	vxorps	%xmm0, %xmm0, %xmm0
-	vmovss	%xmm0, -88(%rbp)
-	vxorps	%xmm0, %xmm0, %xmm0
-	vmovss	%xmm0, -84(%rbp)
-	vxorps	%xmm0, %xmm0, %xmm0
 	vmovss	%xmm0, -80(%rbp)
-	vmovss	.LC2(%rip), %xmm0
-	vmovss	%xmm0, -76(%rbp)
 	vxorps	%xmm0, %xmm0, %xmm0
+	vmovss	%xmm0, -76(%rbp)
+	vmovss	.LC2(%rip), %xmm0
 	vmovss	%xmm0, -72(%rbp)
 	vxorps	%xmm0, %xmm0, %xmm0
 	vmovss	%xmm0, -68(%rbp)
-	vpxor	%xmm0, %xmm0, %xmm0
-	vmovdqa	%xmm0, -64(%rbp)
-	vmovdqa	%xmm0, -48(%rbp)
-	vxorps	%xmm0, %xmm0, %xmm0
-	vmovss	%xmm0, -552(%rbp)
-	vxorps	%xmm0, %xmm0, %xmm0
-	vmovss	%xmm0, -548(%rbp)
-	vxorps	%xmm0, %xmm0, %xmm0
-	vmovss	%xmm0, -544(%rbp)
-	vxorps	%xmm0, %xmm0, %xmm0
-	vmovss	%xmm0, -540(%rbp)
-	vmovss	-632(%rbp), %xmm0
-	vmovss	%xmm0, -536(%rbp)
-	vmovss	-632(%rbp), %xmm0
-	vmovss	%xmm0, -532(%rbp)
-	vxorps	%xmm0, %xmm0, %xmm0
-	vmovss	%xmm0, -528(%rbp)
-	vmovss	-632(%rbp), %xmm0
-	vmovss	%xmm0, -524(%rbp)
-	vmovss	-552(%rbp), %xmm1
-	vmovss	-548(%rbp), %xmm0
-	vunpcklps	%xmm1, %xmm0, %xmm1
-	vmovss	-544(%rbp), %xmm2
-	vmovss	-540(%rbp), %xmm0
-	vunpcklps	%xmm2, %xmm0, %xmm0
-	vmovlhps	%xmm1, %xmm0, %xmm1
-	vmovss	-536(%rbp), %xmm2
-	vmovss	-532(%rbp), %xmm0
-	vunpcklps	%xmm2, %xmm0, %xmm2
-	vmovss	-528(%rbp), %xmm3
-	vmovss	-524(%rbp), %xmm0
-	vunpcklps	%xmm3, %xmm0, %xmm0
-	vmovlhps	%xmm2, %xmm0, %xmm0
-	vinsertf128	$0x1, %xmm1, %ymm0, %ymm0
-	vmovaps	%ymm0, -496(%rbp)
-	vmovss	.LC2(%rip), %xmm0
-	vmovss	%xmm0, -584(%rbp)
-	vmovss	.LC2(%rip), %xmm0
-	vmovss	%xmm0, -580(%rbp)
-	vmovss	.LC2(%rip), %xmm0
-	vmovss	%xmm0, -576(%rbp)
-	vmovss	.LC2(%rip), %xmm0
-	vmovss	%xmm0, -572(%rbp)
-	vmovss	-636(%rbp), %xmm0
-	vmovss	%xmm0, -568(%rbp)
-	vmovss	-636(%rbp), %xmm0
-	vmovss	%xmm0, -564(%rbp)
-	vmovss	-636(%rbp), %xmm0
-	vmovss	%xmm0, -560(%rbp)
-	vmovss	-636(%rbp), %xmm0
-	vmovss	%xmm0, -556(%rbp)
-	vmovss	-584(%rbp), %xmm1
-	vmovss	-580(%rbp), %xmm0
-	vunpcklps	%xmm1, %xmm0, %xmm1
-	vmovss	-576(%rbp), %xmm2
-	vmovss	-572(%rbp), %xmm0
-	vunpcklps	%xmm2, %xmm0, %xmm0
-	vmovlhps	%xmm1, %xmm0, %xmm1
-	vmovss	-568(%rbp), %xmm2
-	vmovss	-564(%rbp), %xmm0
-	vunpcklps	%xmm2, %xmm0, %xmm2
-	vmovss	-560(%rbp), %xmm3
-	vmovss	-556(%rbp), %xmm0
-	vunpcklps	%xmm3, %xmm0, %xmm0
-	vmovlhps	%xmm2, %xmm0, %xmm0
-	vinsertf128	$0x1, %xmm1, %ymm0, %ymm0
-	vmovaps	%ymm0, -464(%rbp)
-	movl	$0, -596(%rbp)
-	jmp	.L10
-.L18:
-	movl	-624(%rbp), %eax
+	movl	-980(%rbp), %eax
 	vmovd	%eax, %xmm0
 	call	_ZSt3cosf
 	vmovd	%xmm0, %eax
-	movl	%eax, -80(%rbp)
-	vmovss	-80(%rbp), %xmm0
-	vmovss	%xmm0, -96(%rbp)
-	movl	-624(%rbp), %eax
+	movl	%eax, -64(%rbp)
+	movl	-980(%rbp), %eax
 	vmovd	%eax, %xmm0
 	call	_ZSt3sinf
 	vmovd	%xmm0, %eax
-	movl	%eax, -72(%rbp)
-	vmovss	-72(%rbp), %xmm0
-	vmovss	%xmm0, -88(%rbp)
-	leaq	-96(%rbp), %rax
-	movq	%rax, -520(%rbp)
-	movq	-520(%rbp), %rax
-	vmovups	(%rax), %ymm0
-	vmovaps	%ymm0, -432(%rbp)
-	movl	$0, -592(%rbp)
-	jmp	.L12
-.L17:
-	movl	-600(%rbp), %eax
+	vmovss	.LC3(%rip), %xmm0
+	vmovd	%eax, %xmm4
+	vxorps	%xmm0, %xmm4, %xmm0
+	vmovss	%xmm0, -60(%rbp)
+	movl	-980(%rbp), %eax
+	vmovd	%eax, %xmm0
+	call	_ZSt3sinf
+	vmovd	%xmm0, %eax
+	movl	%eax, -56(%rbp)
+	movl	-980(%rbp), %eax
 	vmovd	%eax, %xmm0
 	call	_ZSt3cosf
+	vmovd	%xmm0, %eax
+	movl	%eax, -52(%rbp)
+	movl	-940(%rbp), %eax
+	vmovd	%eax, %xmm0
+	call	_ZSt3cosf
+	vmovd	%xmm0, %eax
+	movl	%eax, -48(%rbp)
+	movl	-940(%rbp), %eax
+	vmovd	%eax, %xmm0
+	call	_ZSt3sinf
+	vmovd	%xmm0, %eax
+	vmovss	.LC3(%rip), %xmm0
+	vmovd	%eax, %xmm5
+	vxorps	%xmm0, %xmm5, %xmm0
+	vmovss	%xmm0, -44(%rbp)
+	movl	-940(%rbp), %eax
+	vmovd	%eax, %xmm0
+	call	_ZSt3sinf
 	vmovd	%xmm0, %eax
 	movl	%eax, -40(%rbp)
-	vmovss	-40(%rbp), %xmm0
-	vmovss	%xmm0, -48(%rbp)
-	vmovss	-48(%rbp), %xmm0
-	vmovss	%xmm0, -56(%rbp)
-	vmovss	-56(%rbp), %xmm0
-	vmovss	%xmm0, -64(%rbp)
-	movl	-600(%rbp), %eax
+	movl	-940(%rbp), %eax
 	vmovd	%eax, %xmm0
-	call	_ZSt3sinf
+	call	_ZSt3cosf
 	vmovd	%xmm0, %eax
-	movl	%eax, -44(%rbp)
-	vmovss	-44(%rbp), %xmm0
-	vmovss	%xmm0, -60(%rbp)
-	leaq	-64(%rbp), %rax
-	movq	%rax, -504(%rbp)
-	movq	-504(%rbp), %rax
-	vmovups	(%rax), %ymm0
+	movl	%eax, -36(%rbp)
+	vxorps	%xmm0, %xmm0, %xmm0
+	vmovss	%xmm0, -904(%rbp)
+	vxorps	%xmm0, %xmm0, %xmm0
+	vmovss	%xmm0, -900(%rbp)
+	vxorps	%xmm0, %xmm0, %xmm0
+	vmovss	%xmm0, -896(%rbp)
+	vxorps	%xmm0, %xmm0, %xmm0
+	vmovss	%xmm0, -892(%rbp)
+	vxorps	%xmm0, %xmm0, %xmm0
+	vmovss	%xmm0, -888(%rbp)
+	vmovss	-984(%rbp), %xmm0
+	vmovss	%xmm0, -884(%rbp)
+	vxorps	%xmm0, %xmm0, %xmm0
+	vmovss	%xmm0, -880(%rbp)
+	vmovss	-984(%rbp), %xmm0
+	vmovss	%xmm0, -876(%rbp)
+	vmovss	-904(%rbp), %xmm1
+	vmovss	-900(%rbp), %xmm0
+	vunpcklps	%xmm1, %xmm0, %xmm1
+	vmovss	-896(%rbp), %xmm2
+	vmovss	-892(%rbp), %xmm0
+	vunpcklps	%xmm2, %xmm0, %xmm0
+	vmovlhps	%xmm1, %xmm0, %xmm1
+	vmovss	-888(%rbp), %xmm2
+	vmovss	-884(%rbp), %xmm0
+	vunpcklps	%xmm2, %xmm0, %xmm2
+	vmovss	-880(%rbp), %xmm3
+	vmovss	-876(%rbp), %xmm0
+	vunpcklps	%xmm3, %xmm0, %xmm0
+	vmovlhps	%xmm2, %xmm0, %xmm0
+	vinsertf128	$0x1, %xmm1, %ymm0, %ymm0
+	vmovaps	%ymm0, -432(%rbp)
+	vmovss	.LC2(%rip), %xmm0
+	vmovss	%xmm0, -936(%rbp)
+	vmovss	.LC2(%rip), %xmm0
+	vmovss	%xmm0, -932(%rbp)
+	vmovss	.LC2(%rip), %xmm0
+	vmovss	%xmm0, -928(%rbp)
+	vmovss	.LC2(%rip), %xmm0
+	vmovss	%xmm0, -924(%rbp)
+	vxorps	%xmm0, %xmm0, %xmm0
+	vmovss	%xmm0, -920(%rbp)
+	vmovss	-988(%rbp), %xmm0
+	vmovss	%xmm0, -916(%rbp)
+	vmovss	-988(%rbp), %xmm0
+	vmovss	%xmm0, -912(%rbp)
+	vmovss	-988(%rbp), %xmm0
+	vmovss	%xmm0, -908(%rbp)
+	vmovss	-936(%rbp), %xmm1
+	vmovss	-932(%rbp), %xmm0
+	vunpcklps	%xmm1, %xmm0, %xmm1
+	vmovss	-928(%rbp), %xmm2
+	vmovss	-924(%rbp), %xmm0
+	vunpcklps	%xmm2, %xmm0, %xmm0
+	vmovlhps	%xmm1, %xmm0, %xmm1
+	vmovss	-920(%rbp), %xmm2
+	vmovss	-916(%rbp), %xmm0
+	vunpcklps	%xmm2, %xmm0, %xmm2
+	vmovss	-912(%rbp), %xmm3
+	vmovss	-908(%rbp), %xmm0
+	vunpcklps	%xmm3, %xmm0, %xmm0
+	vmovlhps	%xmm2, %xmm0, %xmm0
+	vinsertf128	$0x1, %xmm1, %ymm0, %ymm0
 	vmovaps	%ymm0, -400(%rbp)
+	leaq	-96(%rbp), %rax
+	movq	%rax, -848(%rbp)
+	movq	-848(%rbp), %rax
+	vmovaps	(%rax), %xmm0
+	vmovaps	%xmm0, -832(%rbp)
+	leaq	-64(%rbp), %rax
+	movq	%rax, -856(%rbp)
+	movq	-856(%rbp), %rax
+	vmovups	(%rax), %xmm0
+	vmovaps	%xmm0, -800(%rbp)
+	leaq	-80(%rbp), %rax
+	movq	%rax, -864(%rbp)
+	movq	-864(%rbp), %rax
+	vmovaps	(%rax), %xmm0
+	vmovaps	%xmm0, -816(%rbp)
+	leaq	-48(%rbp), %rax
+	movq	%rax, -872(%rbp)
+	movq	-872(%rbp), %rax
+	vmovups	(%rax), %xmm0
+	vmovaps	%xmm0, -784(%rbp)
+	movl	$0, -948(%rbp)
+	jmp	.L14
+.L30:
+	vmovaps	-832(%rbp), %xmm0
+	vmovaps	%xmm0, -688(%rbp)
+	vmovaps	-800(%rbp), %xmm0
+	vmovaps	%xmm0, -672(%rbp)
+	vmovaps	-688(%rbp), %xmm0
+	vmulps	-672(%rbp), %xmm0, %xmm0
+	vmovaps	%xmm0, -768(%rbp)
+	vmovaps	-768(%rbp), %xmm0
+	vmovaps	%xmm0, -720(%rbp)
+	vmovaps	-768(%rbp), %xmm0
+	vmovaps	%xmm0, -704(%rbp)
+	vmovaps	-720(%rbp), %xmm0
+	vhaddps	-704(%rbp), %xmm0, %xmm0
+	nop
+	vmovaps	%xmm0, -832(%rbp)
+	vmovaps	-832(%rbp), %xmm0
+	vpermilps	$212, %xmm0, %xmm0
+	vmovaps	%xmm0, -752(%rbp)
+	vmovaps	oneVector(%rip), %xmm1
+	vmovaps	-752(%rbp), %xmm0
+	vblendps	$10, %xmm1, %xmm0, %xmm0
+	vmovaps	%xmm0, -752(%rbp)
+	movl	$0, -944(%rbp)
+	jmp	.L17
+.L29:
+	vmovaps	-816(%rbp), %xmm0
+	vmovaps	%xmm0, -624(%rbp)
+	vmovaps	-784(%rbp), %xmm0
+	vmovaps	%xmm0, -608(%rbp)
+	vmovaps	-624(%rbp), %xmm0
+	vmulps	-608(%rbp), %xmm0, %xmm0
+	vmovaps	%xmm0, -768(%rbp)
+	vmovaps	-768(%rbp), %xmm0
+	vmovaps	%xmm0, -656(%rbp)
+	vmovaps	-768(%rbp), %xmm0
+	vmovaps	%xmm0, -640(%rbp)
+	vmovaps	-656(%rbp), %xmm0
+	vhaddps	-640(%rbp), %xmm0, %xmm0
+	nop
+	vmovaps	%xmm0, -816(%rbp)
+	vmovaps	-816(%rbp), %xmm0
+	vpermilps	$68, %xmm0, %xmm0
+	vmovaps	%xmm0, -736(%rbp)
+	vmovaps	-736(%rbp), %xmm0
+	vmovaps	%xmm0, -592(%rbp)
+	vmovaps	-736(%rbp), %xmm0
+	vmovaps	%xmm0, -576(%rbp)
+	vmovaps	-576(%rbp), %xmm0
+	vmovaps	%xmm0, -560(%rbp)
+	vmovaps	-592(%rbp), %xmm0
+	vmovaps	%xmm0, -544(%rbp)
+	vmovaps	-544(%rbp), %xmm0
+	vmovaps	%xmm0, -528(%rbp)
+	vmovaps	-528(%rbp), %xmm0
+	nop
+	vinsertf128	$0x1, -560(%rbp), %ymm0, %ymm0
+	nop
+	vmovaps	%ymm0, -368(%rbp)
+	vmovaps	-368(%rbp), %ymm0
+	vmovaps	%ymm0, -272(%rbp)
 	vmovaps	-400(%rbp), %ymm0
-	vmovaps	%ymm0, -176(%rbp)
-	vmovaps	-464(%rbp), %ymm0
+	vmovaps	%ymm0, -240(%rbp)
+	vmovaps	-272(%rbp), %ymm0
+	vmulps	-240(%rbp), %ymm0, %ymm0
+	vmovaps	%ymm0, -368(%rbp)
+	vmovaps	-368(%rbp), %ymm0
+	vmovaps	%ymm0, -336(%rbp)
+	vmovaps	-432(%rbp), %ymm0
+	vmovaps	%ymm0, -304(%rbp)
+	vmovaps	-336(%rbp), %ymm0
+	vaddps	-304(%rbp), %ymm0, %ymm0
+	vmovaps	%ymm0, -368(%rbp)
+	vmovaps	-752(%rbp), %xmm0
+	vmovaps	%xmm0, -512(%rbp)
+	vmovaps	-752(%rbp), %xmm0
+	vmovaps	%xmm0, -496(%rbp)
+	vmovaps	-496(%rbp), %xmm0
+	vmovaps	%xmm0, -480(%rbp)
+	vmovaps	-512(%rbp), %xmm0
+	vmovaps	%xmm0, -464(%rbp)
+	vmovaps	-464(%rbp), %xmm0
+	vmovaps	%xmm0, -448(%rbp)
+	vmovaps	-448(%rbp), %xmm0
+	nop
+	vinsertf128	$0x1, -480(%rbp), %ymm0, %ymm0
+	nop
+	vmovaps	-368(%rbp), %ymm1
+	vmovaps	%ymm1, -176(%rbp)
 	vmovaps	%ymm0, -144(%rbp)
 	vmovaps	-176(%rbp), %ymm0
 	vmulps	-144(%rbp), %ymm0, %ymm0
 	vmovaps	%ymm0, -368(%rbp)
+	movq	-968(%rbp), %rax
+	movq	%rax, -840(%rbp)
 	vmovaps	-368(%rbp), %ymm0
-	vmovaps	%ymm0, -240(%rbp)
-	vmovaps	-496(%rbp), %ymm0
 	vmovaps	%ymm0, -208(%rbp)
-	vmovaps	-240(%rbp), %ymm0
-	vaddps	-208(%rbp), %ymm0, %ymm0
-	vmovaps	%ymm0, -368(%rbp)
-	vmovaps	-368(%rbp), %ymm0
-	vmovaps	%ymm0, -304(%rbp)
-	vmovaps	-432(%rbp), %ymm0
-	vmovaps	%ymm0, -272(%rbp)
-	vmovaps	-304(%rbp), %ymm0
-	vmulps	-272(%rbp), %ymm0, %ymm0
-	vmovaps	%ymm0, -368(%rbp)
-	movq	-616(%rbp), %rax
-	movq	%rax, -512(%rbp)
-	vmovaps	-368(%rbp), %ymm0
-	vmovaps	%ymm0, -336(%rbp)
-	vmovaps	-336(%rbp), %ymm0
-	movq	-512(%rbp), %rax
+	vmovaps	-208(%rbp), %ymm0
+	movq	-840(%rbp), %rax
 	vmovups	%xmm0, (%rax)
 	vextractf128	$0x1, %ymm0, 16(%rax)
 	nop
-	addq	$32, -616(%rbp)
-	vmovss	-600(%rbp), %xmm0
-	vaddss	-588(%rbp), %xmm0, %xmm0
-	vmovss	%xmm0, -600(%rbp)
-	incl	-592(%rbp)
-.L12:
-	movl	-592(%rbp), %eax
-	cmpl	-640(%rbp), %eax
-	jb	.L17
-	vmovss	-624(%rbp), %xmm0
-	vaddss	-628(%rbp), %xmm0, %xmm0
-	vmovss	%xmm0, -624(%rbp)
-	incl	-596(%rbp)
-.L10:
-	movl	-596(%rbp), %eax
-	cmpl	-620(%rbp), %eax
-	jb	.L18
+	addq	$32, -968(%rbp)
+	vmovss	-952(%rbp), %xmm0
+	vaddss	-940(%rbp), %xmm0, %xmm0
+	vmovss	%xmm0, -952(%rbp)
+	incl	-944(%rbp)
+.L17:
+	movl	-944(%rbp), %eax
+	cmpl	-992(%rbp), %eax
+	jb	.L29
+	vmovss	-976(%rbp), %xmm0
+	vaddss	-980(%rbp), %xmm0, %xmm0
+	vmovss	%xmm0, -976(%rbp)
+	incl	-948(%rbp)
+.L14:
+	movl	-948(%rbp), %eax
+	cmpl	-972(%rbp), %eax
+	jb	.L30
 	nop
 	movq	-24(%rbp), %rax
 	subq	%fs:40, %rax
-	je	.L19
+	je	.L31
 	call	__stack_chk_fail@PLT
-.L19:
+.L31:
 	movq	-8(%rbp), %r10
 	.cfi_def_cfa 10, 0
 	leave
@@ -302,83 +432,93 @@ torusIndexGenerator:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
-	movq	%rdi, -24(%rbp)
-	movl	%esi, -28(%rbp)
-	movl	%edx, -32(%rbp)
-	movl	$0, -8(%rbp)
-	jmp	.L21
-.L24:
-	movl	$0, -4(%rbp)
-	jmp	.L22
-.L23:
-	movl	-8(%rbp), %eax
-	imull	-32(%rbp), %eax
-	movl	-4(%rbp), %edx
-	leal	(%rax,%rdx), %ecx
-	movq	-24(%rbp), %rax
-	leaq	4(%rax), %rdx
-	movq	%rdx, -24(%rbp)
-	movl	%ecx, (%rax)
-	movl	-8(%rbp), %eax
-	incl	%eax
-	imull	-32(%rbp), %eax
-	movl	-4(%rbp), %edx
-	leal	(%rax,%rdx), %ecx
-	movq	-24(%rbp), %rax
-	leaq	4(%rax), %rdx
-	movq	%rdx, -24(%rbp)
-	movl	%ecx, (%rax)
-	movl	-8(%rbp), %eax
-	incl	%eax
-	imull	-32(%rbp), %eax
-	movl	-4(%rbp), %edx
+	movq	%rdi, -40(%rbp)
+	movl	%esi, -44(%rbp)
+	movl	%edx, -48(%rbp)
+	movl	$0, -24(%rbp)
+	jmp	.L33
+.L36:
+	movl	$0, -20(%rbp)
+	jmp	.L34
+.L35:
+	movl	-24(%rbp), %eax
+	imull	-48(%rbp), %eax
+	movl	-20(%rbp), %edx
 	addl	%edx, %eax
-	leal	1(%rax), %ecx
-	movq	-24(%rbp), %rax
-	leaq	4(%rax), %rdx
-	movq	%rdx, -24(%rbp)
-	movl	%ecx, (%rax)
-	movl	-8(%rbp), %eax
-	imull	-32(%rbp), %eax
-	movl	-4(%rbp), %edx
-	leal	(%rax,%rdx), %ecx
-	movq	-24(%rbp), %rax
-	leaq	4(%rax), %rdx
-	movq	%rdx, -24(%rbp)
-	movl	%ecx, (%rax)
-	movl	-8(%rbp), %eax
-	imull	-32(%rbp), %eax
-	movl	-4(%rbp), %edx
-	addl	%edx, %eax
-	leal	1(%rax), %ecx
-	movq	-24(%rbp), %rax
-	leaq	4(%rax), %rdx
-	movq	%rdx, -24(%rbp)
-	movl	%ecx, (%rax)
-	movl	-8(%rbp), %eax
+	movl	%eax, -16(%rbp)
+	movl	-24(%rbp), %eax
 	incl	%eax
-	imull	-32(%rbp), %eax
-	movl	-4(%rbp), %edx
+	movl	$0, %edx
+	divl	-44(%rbp)
+	movl	%edx, %eax
+	imull	-48(%rbp), %eax
+	movl	-20(%rbp), %edx
 	addl	%edx, %eax
-	leal	1(%rax), %ecx
-	movq	-24(%rbp), %rax
+	movl	%eax, -12(%rbp)
+	movl	-24(%rbp), %eax
+	imull	-48(%rbp), %eax
+	movl	%eax, %ecx
+	movl	-20(%rbp), %eax
+	incl	%eax
+	movl	$0, %edx
+	divl	-48(%rbp)
+	movl	%edx, %eax
+	addl	%ecx, %eax
+	movl	%eax, -8(%rbp)
+	movl	-24(%rbp), %eax
+	incl	%eax
+	movl	$0, %edx
+	divl	-44(%rbp)
+	movl	%edx, %eax
+	imull	-48(%rbp), %eax
+	movl	%eax, %ecx
+	movl	-20(%rbp), %eax
+	incl	%eax
+	movl	$0, %edx
+	divl	-48(%rbp)
+	movl	%edx, %eax
+	addl	%ecx, %eax
+	movl	%eax, -4(%rbp)
+	movl	-16(%rbp), %ecx
+	movq	-40(%rbp), %rax
 	leaq	4(%rax), %rdx
-	movq	%rdx, -24(%rbp)
+	movq	%rdx, -40(%rbp)
 	movl	%ecx, (%rax)
-	incl	-4(%rbp)
-.L22:
-	movl	-32(%rbp), %eax
-	decl	%eax
-	movl	-4(%rbp), %edx
-	cmpl	%eax, %edx
-	jb	.L23
-	incl	-8(%rbp)
-.L21:
-	movl	-28(%rbp), %eax
-	decl	%eax
-	movl	-8(%rbp), %edx
-	cmpl	%eax, %edx
-	jb	.L24
+	movl	-12(%rbp), %ecx
+	movq	-40(%rbp), %rax
+	leaq	4(%rax), %rdx
+	movq	%rdx, -40(%rbp)
+	movl	%ecx, (%rax)
+	movl	-4(%rbp), %ecx
+	movq	-40(%rbp), %rax
+	leaq	4(%rax), %rdx
+	movq	%rdx, -40(%rbp)
+	movl	%ecx, (%rax)
+	movl	-16(%rbp), %ecx
+	movq	-40(%rbp), %rax
+	leaq	4(%rax), %rdx
+	movq	%rdx, -40(%rbp)
+	movl	%ecx, (%rax)
+	movl	-8(%rbp), %ecx
+	movq	-40(%rbp), %rax
+	leaq	4(%rax), %rdx
+	movq	%rdx, -40(%rbp)
+	movl	%ecx, (%rax)
+	movl	-4(%rbp), %ecx
+	movq	-40(%rbp), %rax
+	leaq	4(%rax), %rdx
+	movq	%rdx, -40(%rbp)
+	movl	%ecx, (%rax)
+	incl	-20(%rbp)
+.L34:
+	movl	-20(%rbp), %eax
+	cmpl	-48(%rbp), %eax
+	jb	.L35
+	incl	-24(%rbp)
+.L33:
+	movl	-24(%rbp), %eax
+	cmpl	-44(%rbp), %eax
+	jb	.L36
 	nop
 	nop
 	popq	%rbp
@@ -387,6 +527,60 @@ torusIndexGenerator:
 	.cfi_endproc
 .LFE5807:
 	.size	torusIndexGenerator, .-torusIndexGenerator
+	.type	_Z41__static_initialization_and_destruction_0ii, @function
+_Z41__static_initialization_and_destruction_0ii:
+.LFB5958:
+	.cfi_startproc
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp
+	.cfi_def_cfa_register 6
+	movl	%edi, -20(%rbp)
+	movl	%esi, -24(%rbp)
+	cmpl	$1, -20(%rbp)
+	jne	.L41
+	cmpl	$65535, -24(%rbp)
+	jne	.L41
+	leaq	ones(%rip), %rax
+	movq	%rax, -8(%rbp)
+	movq	-8(%rbp), %rax
+	vmovups	(%rax), %xmm0
+	vmovaps	%xmm0, oneVector(%rip)
+	leaq	zeros(%rip), %rax
+	movq	%rax, -16(%rbp)
+	movq	-16(%rbp), %rax
+	vmovups	(%rax), %xmm0
+	vmovaps	%xmm0, zeroVector(%rip)
+.L41:
+	nop
+	popq	%rbp
+	.cfi_def_cfa 7, 8
+	ret
+	.cfi_endproc
+.LFE5958:
+	.size	_Z41__static_initialization_and_destruction_0ii, .-_Z41__static_initialization_and_destruction_0ii
+	.type	_GLOBAL__sub_I_ones, @function
+_GLOBAL__sub_I_ones:
+.LFB5959:
+	.cfi_startproc
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp
+	.cfi_def_cfa_register 6
+	movl	$65535, %esi
+	movl	$1, %edi
+	call	_Z41__static_initialization_and_destruction_0ii
+	popq	%rbp
+	.cfi_def_cfa 7, 8
+	ret
+	.cfi_endproc
+.LFE5959:
+	.size	_GLOBAL__sub_I_ones, .-_GLOBAL__sub_I_ones
+	.section	.init_array,"aw"
+	.align 8
+	.quad	_GLOBAL__sub_I_ones
 	.section	.rodata
 	.align 8
 .LC1:
@@ -395,5 +589,11 @@ torusIndexGenerator:
 	.align 4
 .LC2:
 	.long	1065353216
+	.align 16
+.LC3:
+	.long	-2147483648
+	.long	0
+	.long	0
+	.long	0
 	.ident	"GCC: (GNU) 12.2.0"
 	.section	.note.GNU-stack,"",@progbits
