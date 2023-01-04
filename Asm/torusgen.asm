@@ -230,7 +230,6 @@ end:
 section .data
     one: dd 1.0
     zero: dd 0
-    pope: dd 2.137
     tau: dd 6.28318530718
     intOne: dd 1
     intZero: dd 0

@@ -1,9 +1,11 @@
-#include <glad/glad.h>
+#include "../Scene/DemoScene.h"
 #include "App.h"
 #include "../Camera/Camera.h"
 #include "../Camera/CameraController.h"
+#include "../ImGui/imgui.h"
 #include "../RenderingContext/RenderingContext.h"
-#include "../Scene/Scene.h"
+#include <functional>
+#include <glad/glad.h>
 
 using namespace GLP;
 
@@ -15,6 +17,7 @@ void App::start() {
   terminate();
 }
 
+
 void App::init() {
   renderingContext = new RenderingContext(800, 600);
   renderingContext->initializeContext();
@@ -25,8 +28,11 @@ void App::init() {
   renderingContext->addMouseMovementCallback(
       CameraController::mouseMovementCallback);
   renderingContext->addKeyboardCallback(CameraController::keyboardCallback);
+  renderingContext->addKeyboardCallback(std::bind(&App::toggleCursorMode, this,
+                                                  std::placeholders::_1,
+                                                  std::placeholders::_2));
 
-  mainScene = new Scene(*camera);
+  mainScene = new DemoScene(*camera);
   mainScene->init();
 }
 
@@ -38,3 +44,9 @@ void App::loop() {
 }
 
 void App::terminate() {}
+
+void App::toggleCursorMode(char c, bool keyDown) {
+  if (c == 0 && keyDown) {
+    renderingContext->toggleMouseInputMode();
+  }
+}

@@ -13,19 +13,15 @@ class Camera;
 
 class Scene {
 
-  MeshLoader meshLoader;
-  std::list<ShaderGroup> shaderGroups;
+protected:
   Camera &camera;
-  ShaderProgram basicShader;
-  std::chrono::system_clock::time_point prevTime;
-  double lightAngle;
 
 public:
   Scene(Camera &camera);
 
-  void init();
-  void render();
-  void update();
+  virtual void init() = 0;
+  virtual void render() = 0;
+  virtual void update() = 0;
 };
 
 } // namespace GLP

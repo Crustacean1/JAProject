@@ -1,9 +1,9 @@
 #ifndef CAMERA_CONTROLLER
 #define CAMERA_CONTROLLER
 
-#include <GLFW/glfw3.h>
-
 namespace GLP {
+class RenderingContext;
+
 class Camera;
 
 class CameraController {
@@ -20,8 +20,9 @@ public:
   static float sensitivity;
 
   static void setCamera(Camera *camera);
-  static void mouseMovementCallback(GLFWwindow *window, double x, double y);
-  static void keyboardCallback(GLFWwindow *window);
+  static void mouseMovementCallback(double x, double y);
+  static void keyboardCallback(char c, bool keyDown);
+  static void viewportCallback(double x, double y);
 };
 
 } // namespace GLP

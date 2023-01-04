@@ -16,12 +16,10 @@ double CameraController::prevMouseY = 0;
 double CameraController::xAxisAngle = 180;
 double CameraController::yAxisAngle = 0;
 
-void CameraController::mouseMovementCallback(GLFWwindow *window, double x,
-                                             double y) {
+void CameraController::mouseMovementCallback(double x, double y) {
   double deltaX = x - prevMouseX;
   double deltaY = y - prevMouseY;
 
-  // if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
   xAxisAngle -= deltaX * sensitivity;
   yAxisAngle =
       std::min(std::max(yAxisAngle + deltaY * sensitivity, -89.0), 89.0);
@@ -35,28 +33,31 @@ void CameraController::mouseMovementCallback(GLFWwindow *window, double x,
   double xSin = sin(glm::radians(xAxisAngle));
 
   camera->setDir(glm::vec3(yCos * xCos, ySin, yCos * xSin));
-  //}
   prevMouseX = x;
   prevMouseY = y;
 }
 
-void CameraController::keyboardCallback(GLFWwindow *window) {
+void CameraController::keyboardCallback(char key, bool keyDown) {
   if (camera == nullptr) {
     return;
   }
-  if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+  if (key == 'W') {
     camera->setPos(camera->getPos() - (camera->forwardDir() * speed));
   }
-  if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+  if (key == 'S') {
     camera->setPos(camera->getPos() - (camera->backwardDir() * speed));
   }
-  if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+  if (key == 'A') {
     camera->setPos(camera->getPos() + (camera->leftDir() * speed));
   }
-  if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+  if (key == 'D') {
     camera->setPos(camera->getPos() + (camera->rightDir() * speed));
   }
   auto pos = camera->forwardDir();
+}
+
+void CameraController::viewportCallback(double x, double y) {
+  camera->setAspectRatio(y / x);
 }
 
 void CameraController::setCamera(Camera *newCamera) { camera = newCamera; }

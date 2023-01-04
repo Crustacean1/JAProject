@@ -19,7 +19,7 @@ TorusIndexGenerator loadIndexGenerator(const char *filename) {
 
 MeshLoader::MeshLoader() {
   setTorusDimensions(10, 4);
-  setTorusResolution(2000, 2000);
+  setTorusResolution(20, 20);
   setThreadCount(8);
   loadSharedLibrary(LibraryType::ASM);
 }
@@ -116,7 +116,7 @@ GLP::Mesh *MeshLoader::regenerateMesh() {
   auto mesh =
       new GLP::Mesh(vertices, vertexSize * torusResolution * ringResolution,
                     indices, indexSize * torusResolution * ringResolution * 2,
-                    GLP::Mesh::Shape::TRIANGLES);
+                    GLP::Mesh::Shape::LINES);
 
   unsigned char sizes[] = {3, 3};
   unsigned char padded[] = {4, 4};
