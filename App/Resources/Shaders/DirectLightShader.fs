@@ -20,6 +20,6 @@ void main(){
 
     vec3 ambient = light.ambient * light.color;
     vec3 diffuse = max(-dot(light.dir, norm),0) * light.color;
-    fColor = vec4(ambient + diffuse,0);
-    fColor = vec4(1,0,1,0);
+    fColor = vec4(vec3(0.5,0.5,0.5) + 0.5*vNorm, 1) * vec4(ambient + diffuse,0);
+    //fColor = vec4(1,0,1,0);
 }

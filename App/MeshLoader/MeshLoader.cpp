@@ -17,11 +17,8 @@ TorusIndexGenerator loadIndexGenerator(const char *filename) {
   return (TorusIndexGenerator)dlsym(sharedObject, "torusIndexGenerator");
 }
 
-MeshLoader::MeshLoader() {
-  setTorusDimensions(10, 4);
-  setTorusResolution(20, 20);
-  setThreadCount(8);
-  loadSharedLibrary(LibraryType::ASM);
+MeshLoader::MeshLoader() : stats(nullptr) {
+  loadSharedLibrary(LibraryType::CPP);
 }
 
 void MeshLoader::loadSharedLibrary(LibraryType type) {
@@ -39,43 +36,46 @@ void MeshLoader::loadSharedLibrary(LibraryType type) {
   indexGenerator = loadIndexGenerator(CPP_DIRECTORY.c_str());
 }
 
-void MeshLoader::setThreadCount(unsigned int threadCount) {
-  this->threadCount = threadCount;
+void MeshLoader::setParams(TorusParams newParams) {
+  if (newParams.ringResolution != params.ringResolution ||
+      newParams.torusResolution != params.torusResolution) {
+    params.ringResolution = newParams.ringResolution;
+    params.torusResolution = newParams.torusResolution;
+
+    unsigned int targetVertSize =
+        params.torusResolution * params.ringResolution * vertexSize;
+    unsigned int targetIndSize =
+        (params.torusResolution) * (params.ringResolution) * indexSize * 2;
+
+    vertices = new float[targetVertSize];
+    indices = new unsigned int[targetIndSize];
+  }
+  params.torusSize = newParams.torusSize;
+  params.threadCount = newParams.threadCount;
+  params.ringSize = newParams.ringSize;
 }
 
-void MeshLoader::setTorusDimensions(double torus, double ring) {
-  torusSize = torus;
-  ringSize = ring;
-}
-
-void MeshLoader::setTorusResolution(unsigned int torus, unsigned int ring) {
-  torusResolution = torus;
-  ringResolution = ring;
-
-  unsigned int targetVertSize = torusResolution * ringResolution * vertexSize;
-  unsigned int targetIndSize =
-      (torusResolution) * (ringResolution)*indexSize * 2;
-
-  vertices = new float[targetVertSize];
-  indices = new unsigned int[targetIndSize];
-}
-
-GLP::Mesh *MeshLoader::regenerateMesh() {
-
+GLP::Mesh *MeshLoader::generateMesh(TorusParams params) {
+  std::cout << params.torusResolution << "\t" << params.ringResolution << "\t"
+            << params.ringSize << "\t" << params.torusSize << "\t"
+            << params.threadCount << std::endl;
   std::vector<std::thread> workers;
-  double *threadTimes = new double[threadCount];
+  double *threadTimes = new double[params.threadCount];
   unsigned int pos = 0;
   unsigned int nextPos = 0;
 
-  for (int i = 0; i < threadCount; ++i) {
-    nextPos = (i + 1) * torusResolution / threadCount;
+  for (int i = 0; i < params.threadCount; ++i) {
+    nextPos = (i + 1) * params.torusResolution / params.threadCount;
 
     workers.emplace_back([=]() {
       auto t1 = std::chrono::high_resolution_clock::now();
+      std::cout << "thread:\t" << i << "\t" << 2 * M_PI * i / params.threadCount
+                << "\t" << nextPos - pos << std::endl;
 
-      vertexGenerator(vertices + pos * ringResolution * 8, nextPos - pos,
-                      2 * M_PI * i / threadCount, 2 * M_PI / torusResolution,
-                      torusSize, ringSize, ringResolution);
+      vertexGenerator(vertices + pos * params.ringResolution * 8, nextPos - pos,
+                      2 * M_PI * pos / params.torusResolution,
+                      2 * M_PI / params.torusResolution, params.torusSize,
+                      params.ringSize, params.ringResolution);
 
       auto t2 = std::chrono::high_resolution_clock::now();
       threadTimes[i] =
@@ -89,34 +89,14 @@ GLP::Mesh *MeshLoader::regenerateMesh() {
     worker.join();
   }
 
-  double max, min, avg;
-  max = min = threadTimes[0];
-  avg = 0;
+  stats = new TorusStats(threadTimes, params.threadCount, 1);
 
-  for (int i = 0; i < threadCount; ++i) {
-    max = max < threadTimes[i] ? threadTimes[i] : max;
-    min = min > threadTimes[i] ? threadTimes[i] : min;
-    avg += threadTimes[i];
-  }
-  avg /= threadCount;
+  indexGenerator(indices, params.torusResolution, params.ringResolution);
 
-  std::cout << "Min: " << min << std::endl;
-  std::cout << "Max: " << max << std::endl;
-  std::cout << "Avg: " << avg << std::endl;
-
-  for (int i = 0; i < 00; ++i) {
-    std::cout << vertices[i * 8] << "\t" << vertices[i * 8 + 1] << "\t"
-              << vertices[i * 8 + 2] << "\t" << vertices[i * 8 + 3] << "\t"
-              << vertices[i * 8 + 4] << "\t" << vertices[i * 8 + 5] << "\t"
-              << vertices[i * 8 + 6] << "\t" << vertices[i * 8 + 7] << "\n";
-  }
-
-  indexGenerator(indices, torusResolution, ringResolution);
-
-  auto mesh =
-      new GLP::Mesh(vertices, vertexSize * torusResolution * ringResolution,
-                    indices, indexSize * torusResolution * ringResolution * 2,
-                    GLP::Mesh::Shape::LINES);
+  auto mesh = new GLP::Mesh(
+      vertices, vertexSize * params.torusResolution * params.ringResolution,
+      indices, indexSize * params.torusResolution * params.ringResolution * 2,
+      GLP::Mesh::Shape::TRIANGLES);
 
   unsigned char sizes[] = {3, 3};
   unsigned char padded[] = {4, 4};

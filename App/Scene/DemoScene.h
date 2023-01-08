@@ -5,15 +5,17 @@
 #include "../RenderingContext/RenderingContext.h"
 #include "../Shaders/ShaderProgram.h"
 #include "./Scene.h"
+#include "./TorusParams.h"
 
 class DemoScene : public GLP::Scene {
   MeshLoader meshLoader;
+  TorusParams torusParams;
   std::list<GLP::ShaderGroup> shaderGroups;
   GLP::ShaderProgram basicShader;
   std::chrono::system_clock::time_point prevTime;
   double lightAngle;
 
-  void initUi();
+  void generate();
   void renderUi();
 
 public:

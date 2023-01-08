@@ -20,4 +20,11 @@ void ShaderGroup::render() {
   }
 }
 
+void ShaderGroup::clearInstances() {
+  for (const auto ptr : modelInstances) {
+    delete ptr;
+  }
+  modelInstances.clear();
+}
+
 unsigned int ShaderGroup::getShaderId() { return program.getId(); }

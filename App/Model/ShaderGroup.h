@@ -16,6 +16,7 @@ class ShaderGroup {
 public:
   ShaderGroup(ShaderProgram &program);
   void addModelInstance(ModelInstance *instance);
+  void clearInstances();
   void useCamera(Camera camera);
   void render();
   unsigned int getShaderId();

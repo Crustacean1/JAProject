@@ -2,6 +2,8 @@
 #define MESH_LOADER
 
 #include "../Model/Model.h"
+#include "../Scene/TorusParams.h"
+#include "../Scene/TorusStats.h"
 #include <iostream>
 
 typedef void (*TorusVertexGenerator)(float *vertices, unsigned int steps,
@@ -27,13 +29,8 @@ class MeshLoader {
   float *vertices;
   unsigned int *indices;
 
-  unsigned int threadCount;
-
-  unsigned int torusResolution;
-  unsigned int ringResolution;
-
-  double torusSize;
-  double ringSize;
+  TorusParams params;
+  TorusStats *stats;
 
   TorusVertexGenerator vertexGenerator;
   TorusIndexGenerator indexGenerator;
@@ -43,13 +40,15 @@ public:
 
   void loadSharedLibrary(LibraryType type);
 
-  void setTorusDimensions(double torus, double ring);
+  void setParams(TorusParams params);
+  /*void setTorusDimensions(double torus, double ring);
   void setTorusResolution(unsigned int torus, unsigned int ring);
-  void setThreadCount(unsigned int threadCount);
+  void setThreadCount(unsigned int threadCount);*/
 
   double getLatestGenerationTime();
 
-  GLP::Mesh *regenerateMesh();
+  GLP::Mesh *generateMesh(TorusParams torusParams);
+  TorusStats getStats();
 
   MeshLoader();
 };

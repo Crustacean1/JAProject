@@ -15,32 +15,35 @@
 DemoScene::DemoScene(GLP::Camera &camera)
     : Scene(camera), basicShader(GLP::ShaderCompiler::compileToShaderProgram(
                          "Resources/Shaders/DirectLightShader.vs",
-                         "Resources/Shaders/DirectLightShader.fs")) {}
+                         "Resources/Shaders/DirectLightShader.fs")),
+      torusParams{10, 5, 5, 5, 1} {}
 
-void DemoScene::initUi() {}
+void DemoScene::generate() {
+
+  meshLoader.setParams(torusParams);
+  auto torusModel = meshLoader.generateMesh(torusParams);
+
+  GLP::ModelInstance *torusInstance = new GLP::ModelInstance(*torusModel);
+
+  shaderGroups.begin()->clearInstances();
+  shaderGroups.begin()->addModelInstance(torusInstance);
+}
 
 void DemoScene::init() {
 
   shaderGroups.emplace_back(basicShader);
 
   basicShader.set("light.dir", glm::vec3(0, -1, 0));
-  basicShader.set("light.color", glm::vec3(1, 0.4, 0.2));
+  basicShader.set("light.color", glm::vec3(1, 1, 1));
   basicShader.set("light.ambient", 0.02);
   basicShader.set("light.diffuse", 0.2);
   basicShader.set("light.specular", 0.4);
-
-  auto torusModel = meshLoader.regenerateMesh();
-  GLP::ModelInstance *torusInstance = new GLP::ModelInstance(*torusModel);
-
-  shaderGroups.begin()->addModelInstance(torusInstance);
-
-  camera.setPos(glm::vec3(0, 0, 0));
   basicShader.set("color", glm::vec4(1, 0, 0, 0));
-
-  initUi();
+  camera.setPos(glm::vec3(0, 0, 0));
 }
 
 void DemoScene::renderUi() {
+
   ImGui_ImplOpenGL3_NewFrame();
   ImGui_ImplGlfw_NewFrame();
   ImGui::NewFrame();
@@ -48,7 +51,23 @@ void DemoScene::renderUi() {
   ImGui::Begin("Torus parameters");
   ImGui::Text("Select parameters for torus generation");
 
+  ImGui::SliderFloat("Torus size", &torusParams.torusSize, 0.0f, 100.f);
+  ImGui::SliderFloat("Ring size", &torusParams.ringSize, 0.0f, 100.f);
+  ImGui::SliderInt("Torus resolution", &torusParams.torusResolution, 2, 1000);
+  ImGui::SliderInt("Ring resolution", &torusParams.ringResolution, 2, 1000);
+  ImGui::SliderInt("Thread count", &torusParams.threadCount, 1, 128);
+
+  if (ImGui::Button("Generate")) {
+    std::cout << "Hooray, I'm usefull" << std::endl;
+    generate();
+  }
+
+  ImGui::End();
+
   ImGui::EndFrame();
+
+  ImGui::Render();
+  ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 void DemoScene::render() {
