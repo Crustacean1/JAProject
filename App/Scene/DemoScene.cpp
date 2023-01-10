@@ -16,7 +16,7 @@ DemoScene::DemoScene(GLP::Camera &camera)
     : Scene(camera), basicShader(GLP::ShaderCompiler::compileToShaderProgram(
                          "Resources/Shaders/DirectLightShader.vs",
                          "Resources/Shaders/DirectLightShader.fs")),
-      torusParams{10, 5, 5, 5, 1} {}
+      torusParams{3000, 3000, 5, 5, 1} {}
 
 void DemoScene::generate() {
 
@@ -53,17 +53,21 @@ void DemoScene::renderUi() {
 
   ImGui::SliderFloat("Torus size", &torusParams.torusSize, 0.0f, 100.f);
   ImGui::SliderFloat("Ring size", &torusParams.ringSize, 0.0f, 100.f);
-  ImGui::SliderInt("Torus resolution", &torusParams.torusResolution, 2, 1000);
-  ImGui::SliderInt("Ring resolution", &torusParams.ringResolution, 2, 1000);
+  ImGui::SliderInt("Torus resolution", &torusParams.torusResolution, 2, 3000);
+  ImGui::SliderInt("Ring resolution", &torusParams.ringResolution, 2, 3000);
   ImGui::SliderInt("Thread count", &torusParams.threadCount, 1, 128);
 
   if (ImGui::Button("Generate")) {
-    std::cout << "Hooray, I'm usefull" << std::endl;
     generate();
+    auto newTime = meshLoader.getTime();
+    std::cout << newTime << std::endl;
   }
 
-  ImGui::End();
+  auto time = meshLoader.getTime();
 
+  ImGui::Text("Time: %f", time);
+
+  ImGui::End();
   ImGui::EndFrame();
 
   ImGui::Render();

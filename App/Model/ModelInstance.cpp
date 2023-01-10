@@ -16,3 +16,5 @@ void ModelInstance::render(ShaderProgram &shader) {
 }
 
 void ModelInstance::refreshModelMatrix() { modelMatrix = glm::mat4(1.f); }
+
+

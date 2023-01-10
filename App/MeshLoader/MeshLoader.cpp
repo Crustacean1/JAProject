@@ -17,8 +17,8 @@ TorusIndexGenerator loadIndexGenerator(const char *filename) {
   return (TorusIndexGenerator)dlsym(sharedObject, "torusIndexGenerator");
 }
 
-MeshLoader::MeshLoader() : stats(nullptr) {
-  loadSharedLibrary(LibraryType::CPP);
+MeshLoader::MeshLoader() : time(0), indices(nullptr), vertices(nullptr) {
+  loadSharedLibrary(LibraryType::ASM);
 }
 
 void MeshLoader::loadSharedLibrary(LibraryType type) {
@@ -31,7 +31,7 @@ void MeshLoader::loadSharedLibrary(LibraryType type) {
     source = ASM_DIRECTORY.c_str();
     break;
   }
-  std::cout << "Loading: " << source << std::endl;
+
   vertexGenerator = loadVertexGenerator(source);
   indexGenerator = loadIndexGenerator(CPP_DIRECTORY.c_str());
 }
@@ -47,6 +47,12 @@ void MeshLoader::setParams(TorusParams newParams) {
     unsigned int targetIndSize =
         (params.torusResolution) * (params.ringResolution) * indexSize * 2;
 
+    if (vertices != nullptr) {
+      delete[] vertices;
+    }
+    if (indices != nullptr) {
+      delete[] indices;
+    }
     vertices = new float[targetVertSize];
     indices = new unsigned int[targetIndSize];
   }
@@ -56,30 +62,20 @@ void MeshLoader::setParams(TorusParams newParams) {
 }
 
 GLP::Mesh *MeshLoader::generateMesh(TorusParams params) {
-  std::cout << params.torusResolution << "\t" << params.ringResolution << "\t"
-            << params.ringSize << "\t" << params.torusSize << "\t"
-            << params.threadCount << std::endl;
   std::vector<std::thread> workers;
-  double *threadTimes = new double[params.threadCount];
   unsigned int pos = 0;
   unsigned int nextPos = 0;
+
+  auto t1 = std::chrono::high_resolution_clock::now();
 
   for (int i = 0; i < params.threadCount; ++i) {
     nextPos = (i + 1) * params.torusResolution / params.threadCount;
 
     workers.emplace_back([=]() {
-      auto t1 = std::chrono::high_resolution_clock::now();
-      std::cout << "thread:\t" << i << "\t" << 2 * M_PI * i / params.threadCount
-                << "\t" << nextPos - pos << std::endl;
-
       vertexGenerator(vertices + pos * params.ringResolution * 8, nextPos - pos,
                       2 * M_PI * pos / params.torusResolution,
                       2 * M_PI / params.torusResolution, params.torusSize,
                       params.ringSize, params.ringResolution);
-
-      auto t2 = std::chrono::high_resolution_clock::now();
-      threadTimes[i] =
-          std::chrono::duration<double, std::milli>(t2 - t1).count();
     });
 
     pos = nextPos;
@@ -89,7 +85,8 @@ GLP::Mesh *MeshLoader::generateMesh(TorusParams params) {
     worker.join();
   }
 
-  stats = new TorusStats(threadTimes, params.threadCount, 1);
+  auto t2 = std::chrono::high_resolution_clock::now();
+  time = std::chrono::duration<double, std::milli>(t2 - t1).count();
 
   indexGenerator(indices, params.torusResolution, params.ringResolution);
 
@@ -104,3 +101,5 @@ GLP::Mesh *MeshLoader::generateMesh(TorusParams params) {
 
   return mesh;
 }
+
+double MeshLoader::getTime() { return time; }
