@@ -1,6 +1,7 @@
 #include "MeshLoader.h"
 #include "../Model/Model.h"
 #include <chrono>
+#include <cstring>
 #include <dlfcn.h>
 #include <iostream>
 #include <math.h>
@@ -17,9 +18,7 @@ TorusIndexGenerator loadIndexGenerator(const char *filename) {
   return (TorusIndexGenerator)dlsym(sharedObject, "torusIndexGenerator");
 }
 
-MeshLoader::MeshLoader() : time(0), indices(nullptr), vertices(nullptr) {
-  loadSharedLibrary(LibraryType::ASM);
-}
+MeshLoader::MeshLoader() : time(0), indices(nullptr), vertices(nullptr) {}
 
 void MeshLoader::loadSharedLibrary(LibraryType type) {
   const char *source;
@@ -56,9 +55,19 @@ void MeshLoader::setParams(TorusParams newParams) {
     vertices = new float[targetVertSize];
     indices = new unsigned int[targetIndSize];
   }
+
   params.torusSize = newParams.torusSize;
   params.threadCount = newParams.threadCount;
   params.ringSize = newParams.ringSize;
+  params.type = newParams.type;
+
+  if (strcmp(params.type, "ASM") == 0) {
+    std::cout << "Loading asm" << std::endl;
+    loadSharedLibrary(LibraryType::ASM);
+  } else {
+    std::cout << "Loading cpp" << std::endl;
+    loadSharedLibrary(LibraryType::CPP);
+  }
 }
 
 GLP::Mesh *MeshLoader::generateMesh(TorusParams params) {

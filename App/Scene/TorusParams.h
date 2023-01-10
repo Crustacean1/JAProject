@@ -10,6 +10,8 @@ public:
   float torusSize;
 
   int threadCount;
+
+  char * type;
 };
 
 #endif /*TORUS_PARAMS*/

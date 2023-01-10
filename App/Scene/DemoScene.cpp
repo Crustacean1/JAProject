@@ -16,7 +16,9 @@ DemoScene::DemoScene(GLP::Camera &camera)
     : Scene(camera), basicShader(GLP::ShaderCompiler::compileToShaderProgram(
                          "Resources/Shaders/DirectLightShader.vs",
                          "Resources/Shaders/DirectLightShader.fs")),
-      torusParams{3000, 3000, 5, 5, 1} {}
+      torusParams{3000, 3000, 5, 5, 1, "ASM"} {
+    std::cout<<torusParams.type<<std::endl;
+}
 
 void DemoScene::generate() {
 
@@ -56,6 +58,17 @@ void DemoScene::renderUi() {
   ImGui::SliderInt("Torus resolution", &torusParams.torusResolution, 2, 3000);
   ImGui::SliderInt("Ring resolution", &torusParams.ringResolution, 2, 3000);
   ImGui::SliderInt("Thread count", &torusParams.threadCount, 1, 128);
+
+  if (ImGui::BeginCombo("Library Type", torusParams.type)) {
+
+    if (ImGui::Selectable("ASM")) {
+      torusParams.type = "ASM";
+    }
+    if (ImGui::Selectable("CPP")) {
+      torusParams.type = "CPP";
+    }
+    ImGui::EndCombo();
+  }
 
   if (ImGui::Button("Generate")) {
     generate();
